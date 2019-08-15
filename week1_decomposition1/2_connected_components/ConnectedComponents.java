@@ -2,10 +2,24 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ConnectedComponents {
-    private static int numberOfComponents(ArrayList<Integer>[] adj) {
-        int result = 0;
-        //write your code here
-        return result;
+    private static int cc = 0;
+    private static void doDepthFirstSearch(boolean[] visited, int[] connectedComponentsNum, ArrayList<Integer>[] adj) {
+        for (int i = 0; i < visited.length; i++) {
+            if (!visited[i]) {
+                explore(i, visited, connectedComponentsNum, adj);
+                cc += 1;
+            }
+        }
+    }
+
+    private static void explore(int x, boolean[] visited, int[] connectedComponentsNum, ArrayList<Integer>[] adj) {
+        visited[x] = true;
+        connectedComponentsNum[x] = cc;
+        for (int y: adj[x]) {
+            if (!visited[y]) {
+                explore(y, visited, connectedComponentsNum, adj);
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -13,8 +27,12 @@ public class ConnectedComponents {
         int n = scanner.nextInt();
         int m = scanner.nextInt();
         ArrayList<Integer>[] adj = (ArrayList<Integer>[])new ArrayList[n];
+        boolean[] visited = new boolean[n];
+        int[] connectedComponentsNum = new int[n];
         for (int i = 0; i < n; i++) {
             adj[i] = new ArrayList<Integer>();
+            visited[i] = false;
+            connectedComponentsNum[i] = 0;
         }
         for (int i = 0; i < m; i++) {
             int x, y;
@@ -23,7 +41,8 @@ public class ConnectedComponents {
             adj[x - 1].add(y - 1);
             adj[y - 1].add(x - 1);
         }
-        System.out.println(numberOfComponents(adj));
+        doDepthFirstSearch(visited, connectedComponentsNum, adj);
+        System.out.println(cc);
     }
 }
 
