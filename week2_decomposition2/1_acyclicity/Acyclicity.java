@@ -1,9 +1,28 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class Acyclicity {
     private static int acyclic(ArrayList<Integer>[] adj) {
-        //write your code here
+        for (int i = 0; i < adj.length; i++) {
+            Deque<Integer> visitedNodes = new ArrayDeque<Integer>();
+            visitedNodes.push(i);
+            int res = DFS(i, adj, visitedNodes);
+            if (res == 1) return 1;
+        }
+        return 0;
+    }
+
+    private static int DFS(int nodeIndex, ArrayList<Integer>[] adj, Deque<Integer> visitedNodes) {
+        for (int i = 0; i < adj[nodeIndex].size(); i++) {
+            int ngb = adj[nodeIndex].get(i);
+            if (visitedNodes.contains(ngb)) return 1;
+            visitedNodes.push(ngb);
+            int res = DFS(ngb, adj, visitedNodes);
+            if (res == 1) return 1;
+            visitedNodes.pop();
+        }
         return 0;
     }
 

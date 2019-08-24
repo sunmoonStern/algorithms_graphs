@@ -6,12 +6,28 @@ public class Toposort {
     private static ArrayList<Integer> toposort(ArrayList<Integer>[] adj) {
         int used[] = new int[adj.length];
         ArrayList<Integer> order = new ArrayList<Integer>();
-        //write your code here
+        for (int i = 0; i < adj.length; i++) {
+            dfs(adj, used, order, i);
+        }
         return order;
     }
 
     private static void dfs(ArrayList<Integer>[] adj, int[] used, ArrayList<Integer> order, int s) {
-      //write your code here
+        if (used[s] == 0) {
+            explore(adj, used, order, s);
+        }
+    }
+
+    private static void explore(ArrayList<Integer>[] adj, int[] used, ArrayList<Integer> order, int s) {
+        used[s] = 1;
+        for (int i = 0; i < adj[s].size(); i++) {
+            int n = adj[s].get(i);
+            if (used[n] == 0) {
+                explore(adj, used, order, n);
+            }
+        }
+        // post-visit
+        order.add(0, s);
     }
 
     public static void main(String[] args) {
