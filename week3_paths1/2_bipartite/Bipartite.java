@@ -11,10 +11,26 @@ public class Bipartite {
         for (int i = 0; i < n; i++) {
             dist[i] = n;
         }
-        Queue<Integer> q = new ArrayDeque<Integer>();
         int s = 0;
+        while (searchConnectedComponent(s, dist, adj) == 1) {
+            s = -1;
+            for (int i = 0; i < n; i++) {
+                if (dist[i] == n) {
+                    s = i;
+                    break;
+                }
+            }
+            if (s == -1) return 1;
+        }
+        return 0;
+    }
+
+    private static int searchConnectedComponent(int s, int[] dist, ArrayList<Integer>[] adj) {
+        boolean flag_error = false;
+        Queue<Integer> q = new ArrayDeque<Integer>();
         dist[s] = 0;
         q.add(s);
+        int n = adj.length;
         while (!q.isEmpty()) {
             int u = q.poll();
             for (int j = 0; j < adj[u].size(); j++) {
