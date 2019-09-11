@@ -2,11 +2,32 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.ArrayDeque;
 
 public class BFS {
     private static int distance(ArrayList<Integer>[] adj, int s, int t) {
         //write your code here
-        return -1;
+        int n = adj.length;
+        int[] dist = new int[n];
+        for (int i = 0; i < n; i++) {
+            dist[i] = n;
+        }
+        // s is the origin
+        Queue<Integer> q = new ArrayDeque<Integer>();
+        dist[s] = 0;
+        q.add(s);
+        while (!q.isEmpty()) {
+            int u = q.poll();
+            for (int j = 0; j < adj[u].size(); j++) {
+                int v = adj[u].get(j);
+                if (dist[v] == n) {
+                    q.add(v);
+                    dist[v] = dist[u] + 1;
+                }
+            }
+        }
+        if (dist[t] == n) dist[t] = -1;
+        return dist[t];
     }
 
     public static void main(String[] args) {
