@@ -80,5 +80,18 @@ class Vertex implements Comparable<Vertex> {
     public int compareTo(Vertex v) {
         return Integer.compare(this.dist, v.getDist());
     }
+
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+        Vertex vertex = (Vertex) object;
+        return getDist() == vertex.getDist() &&
+                getIndex() == vertex.getIndex();
+    }
+
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getDist(), getIndex());
+    }
 }
 
