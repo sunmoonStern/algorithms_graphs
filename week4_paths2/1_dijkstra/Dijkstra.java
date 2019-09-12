@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Dijkstra {
-    static final int MAX_DIST = 1000;
+    static final int MAX_DIST = 10000000;
     static final int NILL = -1;
     private static int distance(ArrayList<Integer>[] adj, ArrayList<Integer>[] cost, int s, int t) {
         int n = adj.length;
