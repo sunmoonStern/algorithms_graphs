@@ -81,17 +81,21 @@ class Vertex implements Comparable<Vertex> {
         return Integer.compare(this.dist, v.getDist());
     }
 
+    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
-        if (!super.equals(object)) return false;
         Vertex vertex = (Vertex) object;
         return getDist() == vertex.getDist() &&
                 getIndex() == vertex.getIndex();
     }
 
+    @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getDist(), getIndex());
+        int result = 31;
+        result = 31 * result + dist;
+        result = 31 * result + index;
+        return result;
     }
 }
 
