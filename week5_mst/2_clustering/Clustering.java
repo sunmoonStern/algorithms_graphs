@@ -1,15 +1,19 @@
 import java.util.Scanner;
 import java.util.PriorityQueue;
+import java.util.ArrayList;
 
 public class Clustering {
+    private static int cc = 0;
     private static double clustering(int[] x, int[] y, int k) {
         double distanceClusters = 0.;
         int n = x.length; // needs to merge n - k times
         double[][] dist = new double[n][n];
-        int id[] = new int[n];
+        int[] clusterIndex = new int[n];
         double upperBound = 2. * Math.sqrt(2.) * Math.pow(10., 3);
+        ArrayList<Integer>[] adj = (ArrayList<Integer>[])new ArrayList[n];
         for (int i = 0; i < n; i++) {
-            id[i] = i;
+            adj[i] = new ArrayList<Integer>();
+            clusterIndex[i] = -1;
             for (int j = 0; j < n; j++) {
                 dist[i][j] = Math.sqrt((x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]));
             }
@@ -29,12 +33,8 @@ public class Clustering {
                 Pair p = pq.poll();
                 i = p.getI();
                 j = p.getJ();
-            } while (isSameCluster(id, i, j));
-            mergeClusters(id, i, j);
-            System.out.println("Merging clusters i = " + i + " j = " + j);
-        }
-        for (int i = 0; i < n; i++) {
-            System.out.println("id = " + id[i] + " x = " + x[i] + " y = " + y[i]);
+            } while (isSameCluster(clusterIndex, i, j));
+            mergeClusters(clusterIndex, adj, i, j);
         }
         int i, j;
         do {
@@ -42,22 +42,42 @@ public class Clustering {
             i = p.getI();
             j = p.getJ();
             distanceClusters = p.getDistance();
-        } while (isSameCluster(id, i, j));
+        } while (isSameCluster(clusterIndex, i, j));
         return distanceClusters;
     }
 
-    private static boolean isSameCluster(int[] ids, int i, int j) {
-        return ids[i] == ids[j];
+    private static boolean isSameCluster(int[] clusterIndex, int i, int j) {
+        if (clusterIndex[i] == -1 && clusterIndex[j] == -1) return false;
+        return clusterIndex[i] == clusterIndex[j];
     }
 
-    private static void mergeClusters(int[] ids, int i, int j) {
-        if (ids[i] < ids[j]) {
-            ids[j] = ids[i];
-            return;
-        } else if (ids[i] > ids[j]) {
-            ids[i] = ids[j];
-            return;
+    private static void doDepthFirstSearch(int[] clusterIndex, ArrayList<Integer>[] adj) {
+        // declare visited and put false
+        int n = clusterIndex.length;
+        boolean[] visited = new boolean[n];
+        cc = 0;
+        for (int i = 0; i < visited.length; i++) {
+            if (!visited[i]) {
+                explore(i, visited, clusterIndex, adj);
+                cc += 1;
+            }
         }
+    }
+
+    private static void explore(int x, boolean[] visited, int[] clusterIndex, ArrayList<Integer>[] adj) {
+        visited[x] = true;
+        clusterIndex[x] = cc;
+        for (int y: adj[x]) {
+            if (!visited[y]) {
+                explore(y, visited, clusterIndex, adj);
+            }
+        }
+    }
+
+    private static void mergeClusters(int[] clusterIndex, ArrayList<Integer>[] adj, int i, int j) {
+        adj[i].add(j);
+        adj[j].add(i);
+        doDepthFirstSearch(clusterIndex, adj);
         return;
     }
 
